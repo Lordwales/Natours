@@ -12,7 +12,7 @@ class APIFeatures {
     // 2. Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
     // eslint-disable-next-line no-unused-vars
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$$(match)`);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
     this.query = this.query.find(JSON.parse(queryStr));
 
     return this;
