@@ -69,34 +69,47 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 //Only for rendered pages,no errors.
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    // 2) Verify the token
+    try {
+      // 2) Verify the token
 
-    const decoded = await promisify(jwt.verify)(
-      req.cookies.jwt,
-      process.env.JWT_SECRET
-    );
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
 
-    // 3) check if user still exits
+      // 3) check if user still exits
 
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 4) check if user changed password after token was issued
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next();
+      } // iat = Issued at. which is part of the ELEMENT of the decoded token
+
+      //There is a logged in user
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-
-    // 4) check if user changed password after token was issued
-    if (currentUser.changedPasswordAfter(decoded.iat)) {
-      return next();
-    } // iat = Issued at. which is part of the ELEMENT of the decoded token
-
-    //There is a logged in user
-    res.locals.user = currentUser;
-    return next();
   }
 
   next();
-});
+};
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() * 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({ status: 'success' });
+};
 
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Get the token and check if it exists
@@ -135,6 +148,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   } // iat = Issued at. which is part of the ELEMENT of the decoded token
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 
