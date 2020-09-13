@@ -33,6 +33,7 @@ app.use(
         "'self'",
         'https://*.mapbox.com',
         'https://cdn.jsdelivr.net',
+        'http://127.0.0.1:3000',
         'unsafe-inline',
         'blob:',
       ],
