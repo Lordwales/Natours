@@ -10,6 +10,7 @@ const cookieParser = require('cookie-parser');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -26,7 +27,13 @@ app.use(helmet());
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'", 'https://*.mapbox.com', 'unsafe-eval'],
+      defaultSrc: [
+        "'self'",
+        'https://*.mapbox.com',
+        'https://js.stripe.com/',
+        'http://www.w3.org/2000/',
+        'unsafe-eval',
+      ],
       baseUri: ["'self'"],
       fontSrc: ["'self'", 'https:', 'data:'],
       scriptSrc: [
@@ -34,6 +41,7 @@ app.use(
         'https://*.mapbox.com',
         'https://cdn.jsdelivr.net',
         'http://127.0.0.1:3000',
+        'https://js.stripe.com/',
         'unsafe-inline',
         'blob:',
       ],
@@ -90,6 +98,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 app.all('*', (req, res, next) => {
   // const err = new Error(`can't find${req.originalUrl} on this server!`);
