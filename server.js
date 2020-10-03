@@ -17,12 +17,12 @@ const { doc } = require('prettier');
 const app = require('./app');
 
 // Database connection for hosted databse
-// const DB = process.env.DATABASE.replace(
-//   '<PASSWORD>',
-//   process.env.DATABASE_PASSWORD
-// );
+const DB = process.env.DATABASE.replace(
+  '<PASSWORD>',
+  process.env.DATABASE_PASSWORD
+);
 
-const DB = process.env.DATABASE_LOCAL;
+//const DB = process.env.DATABASE_LOCAL;
 
 mongoose
   .connect(DB, {
