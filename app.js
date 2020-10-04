@@ -6,8 +6,8 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cookieParser = require('cookie-parser');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -17,6 +17,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 
 const app = express();
+app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // 1)GLOBAL MIDDLEWARE
@@ -68,6 +69,7 @@ app.use('/api', limiter);
 
 // Body Parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Cookie Parser, reading data from cookie
 app.use(cookieParser());
@@ -94,7 +96,7 @@ app.use(
   })
 );
 
-app.use(compression());
+//app.use(compression());
 
 // 2) ROUTES
 app.use('/', viewRouter);

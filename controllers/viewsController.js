@@ -31,10 +31,6 @@ exports.getTour = CatchAsync(async (req, res, next) => {
       title: `${tour.name} Tour`,
       tour,
     })
-    .set(
-      'Content-Security-Policy',
-      "default-src 'self' https://*.mapbox.com https://*.stripe.com ;base-uri 'self';block-all-mixed-content;font-src 'self' https: data:;frame-ancestors 'self';img-src 'self' data:;object-src 'none';script-src https://cdnjs.cloudflare.com https://api.mapbox.com https://js.stripe.com 'self' blob: ;script-src-attr 'none';style-src 'self' https: 'unsafe-inline';upgrade-insecure-requests;"
-    );
   next();
 });
 

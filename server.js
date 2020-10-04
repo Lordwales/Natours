@@ -13,8 +13,6 @@ process.on('uncaughtException', (err) => {
 });
 
 dotenv.config({ path: './config.env' });
-
-const { doc } = require('prettier');
 const app = require('./app');
 
 // Database connection for hosted databse
@@ -26,7 +24,7 @@ const DB = process.env.DATABASE.replace(
 //const DB = process.env.DATABASE_LOCAL;
 
 mongoose
-  .connect(DB, {
+  .connect(process.env.DATABASE_LOCAL , {
     useNewUrlParser: true,
     useCreateIndex: true,
     useFindAndModify: false,
@@ -45,5 +43,12 @@ process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
   server.close(() => {
     process.exit(1);
+  });
+});
+
+process.on('SIGTERM', () => {
+  console.log('👋 SIGTERM RECEIVED. Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated!');
   });
 });
