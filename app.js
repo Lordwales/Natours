@@ -7,6 +7,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
 const compression = require('compression');
+const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
@@ -21,6 +22,19 @@ app.enable('trust proxy');
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
 // 1)GLOBAL MIDDLEWARE
+
+// Implement CORS
+
+app.use(cors());
+// Access-Control-Allow-Origin *
+// api.natours.com, front-end natours.com
+// app.use(cors({
+//   origin: 'https://www.natours.com'
+// }))
+
+app.options('*', cors());
+// app.options('/api/v1/tours/:id', cors());
+
 
 // Serving static files
 app.use(express.static(path.join(__dirname, 'public')));
